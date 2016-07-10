@@ -1,37 +1,36 @@
 set nocompatible " be iMproved, required
 filetype off " required
 
-" set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
+" Plugins (using junegunn/vim-plug)
+call plug#begin('~/.vim/bundle')
 
-" let Vundle manage Vundle, required
-Plugin 'gmarik/Vundle.vim'
-Plugin 'Valloric/YouCompleteMe'
-Plugin 'fatih/vim-go'
-Plugin 'airblade/vim-gitgutter'
-"Plugin 'scrooloose/syntastic'
-Plugin 'xolox/vim-misc'
-"Plugin 'xolox/vim-session'
-Plugin 'wting/gitsessions.vim'
-Plugin 'neomake/neomake'
-Plugin 'scrooloose/nerdtree'
-Plugin 'yegappan/mru'
-Plugin 'tpope/vim-fugitive'
-Plugin 'fisadev/vim-isort'
-"Plugin 'vim-perl/vim-perl', { 'for': 'perl', 'do': 'make clean carp dancer highlight-all-pragmas moose test-more try-tiny' }
-Plugin 'cfsalguero/perl-go-to-def'
-Plugin 'vim-airline/vim-airline'
+Plug 'airblade/vim-gitgutter'
+Plug 'wting/gitsessions.vim'
+Plug 'scrooloose/nerdtree'
+Plug 'yegappan/mru'
+Plug 'tpope/vim-fugitive'
+Plug 'vim-airline/vim-airline'
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'Valloric/YouCompleteMe'
 
-call vundle#end() " required
+Plug 'fatih/vim-go'
+Plug 'cfsalguero/perl-go-to-def'
+Plug 'pangloss/vim-javascript'
+Plug 'mattn/emmet-vim'
+Plug 'ternjs/tern_for_vim'
+Plug 'helino/vim-json'
+
+call plug#end()
+"""""""""""""""""""""""""""""""""""
+
 filetype plugin indent on " required
 syntax on
 
 " Send more characters for redraws
-"set ttyfast
+set ttyfast
 "
 " Enable mouse use in all modes
-set mouse=
+"set mouse=
 "
 " Set this to the name of your terminal that supports mouse codes.
 " Must be one of: xterm, xterm2, netterm, dec, jsbterm, pterm
@@ -97,7 +96,7 @@ au FileType go nmap <Leader>i <Plug>(go-info)
 
 au BufRead,BufNewFile *.md set filetype=markdown
 au BufRead,BufNewFile *.go set filetype=go
-autocmd! BufWritePost * Neomake
+"autocmd! BufWritePost * Neomake
 
 
 :let g:session_autosave = 'yes'
@@ -109,8 +108,9 @@ set ssop-=options    " do not store global and local values in a session
 set number
 set t_Co=256
 set background=dark
-set tabstop=4 
-set shiftwidth=4
+set expandtab
+set tabstop=2 
+set shiftwidth=2
 set virtualedit=all                       
 set backspace=2
 set nocompatible
@@ -127,6 +127,7 @@ set laststatus=2
 set hlsearch
 set foldmethod=syntax
 set foldlevelstart=20
+set hidden
 
 colorscheme hybrid
 
@@ -157,8 +158,12 @@ hi TabLineSel term=none cterm=none ctermfg=White ctermbg=Blue
 "set <Insert>=[2~
 
 map  <C-n>       :NERDTreeToggle<CR>
-map  <C-Right>   <Esc>:tabnext<CR>
-map  <C-Left>    <Esc>:tabprevious<CR>
+map  <C-k>       <Esc>:bnext<CR>
+map  <C-j>       <Esc>:bprevious<CR>
+map  <C-x>       <Esc>:bd<CR>
+map  <C-h>       <Esc>:noh<Up>
+map  <C-Right>   <Esc><C-w><Right><CR>
+map  <C-Left>    <Esc><C-w><Left><CR>
 map  <C-Down>    <Esc><C-w><Down>
 map  <C-Up>      <Esc><C-w><Up>
 

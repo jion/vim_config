@@ -1,17 +1,10 @@
+#!/bin/bash
 
-git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-git clone https://github.com/Valloric/YouCompleteMe.git ~/.vim/bundle/YouCompleteMe/
-git clone https://github.com/fatih/vim-go.git ~/.vim/bundle/vim-go
-git clone https://github.com/scrooloose/nerdtree.git ~/vim/bundle/nerdtree
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" > /dev/null && pwd )"
 
-# YCM
-sudo apt-get install build-essential cmake
-sudo apt-get install python-dev
+pushd $DIR
 
-cd ~/.vim/bundle/YouCompleteMe/
-git submodule update --init --recursive
-./install.py --gocode-completer
-
+# Backup existing configuration
 if [ -e ~/.vimrc ]; then
     if [ -e ~/.vimrc.old ]; then
         rm ~/.vimrc.old
@@ -19,24 +12,54 @@ if [ -e ~/.vimrc ]; then
     mv ~/.vimrc ~/.vimrc.old
 fi
 
-ln -s .vimrc ~/
+if [ -e ~/.vim ]; then
+    if [ -e ~/.vim.old ]; then
+        rm -Rf ~/.vim.old
+    fi
+    mv ~/.vim ~/.vim.old
+fi
 
-cd ~/
-vim +PluginInstall +qall
+cp .vimrc ~/
+mkdir -p ~/.vim/autoload
+cp -R ./colors ~/.vim
+
+# Install junegunn/vim-plug
+curl -fLo ~/.vim/autoload/plug.vim --create-dirs \
+      https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+
+vim +PlugInstall +qall
+
+# Install YouCompleteMe
+sudo apt-get install -y build-essential cmake
+sudo apt-get install -y python-dev python3-dev
+
+pushd ~/.vim/bundle/YouCompleteMe/
+git submodule update --init --recursive
+./install.py --gocode-completer --clang-completer
+popd
+
+# Install TernJS
+sudo apt-get install -y nodejs npm
+pushd ~/.vim/bundle/tern_for_vim/
+npm install
+popd
 
 # Fix for NerdTree. If we try to open but the file is already opened, 
 # just jump to the that instead of opening it twice.
-cp override_tab_mapping.vim bundle/nerdtree/nerdtree_plugin/
+cp override_tab_mapping.vim ~/.vim/bundle/nerdtree/nerdtree_plugin/
 
 
 # PowerFonts for PowerLine
-cd /tmp
+pushd /tmp
 git clone https://github.com/powerline/powerline.git
-cd powerline
+pushd powerline
 sudo setup.py install
 
 wget https://github.com/Lokaltog/powerline/raw/develop/font/PowerlineSymbols.otf https://github.com/Lokaltog/powerline/raw/develop/font/10-powerline-symbols.conf
 sudo mv PowerlineSymbols.otf /usr/share/fonts/
 sudo fc-cache -vf
 sudo mv 10-powerline-symbols.conf /etc/fonts/conf.d/
+popd
+popd
 
+popd
