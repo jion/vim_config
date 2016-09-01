@@ -6,19 +6,26 @@ set rtp+=~/.vim/bundle/Vundle.vim
 call vundle#begin()
 
 " let Vundle manage Vundle, required
-Plugin 'gmarik/Vundle.vim'
-Plugin 'Valloric/YouCompleteMe'
-Plugin 'fatih/vim-go'
-Plugin 'wting/gitsessions.vim'
 Plugin 'airblade/vim-gitgutter'
-Plugin 'wting/rust.vim'
-Plugin 'scrooloose/syntastic'
-Plugin 'scrooloose/nerdtree'
 Plugin 'bling/vim-airline'    
-Plugin 'yegappan/mru'
-Plugin 'tpope/vim-fugitive'
-Plugin 'vim-perl/vim-perl', { 'for': 'perl', 'do': 'make clean carp dancer highlight-all-pragmas moose test-more try-tiny' }
+Plugin 'cfsalguero/gitsessions.vim'
 Plugin 'cfsalguero/perl-go-to-def'
+Plugin 'fatih/vim-go'
+Plugin 'gmarik/Vundle.vim'
+Plugin 'kshenoy/vim-signature'
+Plugin 'scrooloose/nerdcommenter'
+Plugin 'scrooloose/nerdtree'
+Plugin 'scrooloose/syntastic'
+Plugin 'tpope/vim-fugitive'
+Plugin 'tpope/vim-surround'
+Plugin 'vim-perl/vim-perl', { 'for': 'perl', 'do': 'make clean carp dancer highlight-all-pragmas moose test-more try-tiny' }
+Plugin 'wting/rust.vim'
+Plugin 'yegappan/mru'
+Plugin 'Valloric/YouCompleteMe'
+Plugin 'pangloss/vim-javascript'
+Plugin 'crusoexia/vim-javascript-lib'
+Plugin 'mxw/vim-jsx'
+Plugin 'crusoexia/vim-monokai'
 
 call vundle#end() " required
 filetype plugin indent on " required
@@ -26,6 +33,7 @@ syntax on
 
 set completeopt=menu
 set showtabline=2
+set hidden " Allow to switch between buffers without saving them
 
 :let mapleader = ","
 let g:ycm_auto_trigger=1
@@ -39,6 +47,8 @@ let g:ycm_enable_diagnostic_highlighting = 1
 let g:ycm_always_populate_location_list = 1 "default 0
 "let g:ycm_open_loclist_on_ycm_diags = 1 "default 1
 ""let g:syntastic_mode_map = { 'mode': 'passive', 'active_filetypes': [],'passive_filetypes': ['go'] }
+let g:syntastic_scss_scss_lint_args = "-c scss-lint.yml"
+let g:SignatureMarkerTextHLDynamic = 1 " vim-signature colored based in gitgutter status
 
 "air-line
 let g:airline_theme = 'dark'
@@ -73,8 +83,8 @@ let g:go_fmt_command = "goimports"
 set number
 set t_Co=256
 set background=dark
-set tabstop=4 
-set shiftwidth=4
+set tabstop=2 
+set shiftwidth=2
 set virtualedit=all                       
 set backspace=2
 set nocompatible
@@ -91,9 +101,13 @@ set laststatus=2
 set hlsearch
 set foldmethod=syntax
 set foldlevelstart=20
+set path+=**
 
 syntax on
-colorscheme hybrid
+colorscheme hybrid "monokai
+set t_Co=256
+let g:monokai_term_italic = 1
+let g:monokai_gui_italic = 1
 
 hi CursorLine term=none cterm=none ctermbg=Black
 hi TabLineFill ctermfg=DarkGrey ctermbg=DarkGrey
@@ -123,10 +137,14 @@ let NERDTreeQuitOnOpen = 1
 "set <Insert>=[2~
 
 map  <C-n>       :NERDTreeToggle<CR>
+map  <C-k>       <Esc>:bn<CR>
+map  <C-j>       <Esc>:bp<CR>
+map  <C-x>       <Esc>:bd<CR>
 map  <C-Right>   <Esc>:tabn<CR>
 map  <C-Left>    <Esc>:tabp<CR>
 map  <C-Down>    <Esc><C-w><Down>
 map  <C-Up>      <Esc><C-w><Up>
+map  <C-h>       <Esc>:noh<CR>
 
 " :w!! will write read only files not opened with sudo
 cmap w!! w !sudo tee % >/dev/null

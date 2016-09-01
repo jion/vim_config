@@ -1,12 +1,12 @@
 
 git clone https://github.com/gmarik/Vundle.vim.git ~/.vim/bundle/Vundle.vim
-git clone https@github.com:Valloric/YouCompleteMe.git ~/.vim/bundle/YouCompleteMe/
+git clone https://github.com/Valloric/YouCompleteMe.git ~/.vim/bundle/YouCompleteMe/
 git clone https://github.com/fatih/vim-go.git ~/.vim/bundle/vim-go
-git clone https://github.com/scrooloose/nerdtree.git ~/vim/bundle/nerdtree
+git clone https://github.com/scrooloose/nerdtree.git ~/.vim/bundle/nerdtree
 
 # YCM
-sudo apt-get install build-essential cmake
-sudo apt-get install python-dev
+sudo apt-get install -y build-essential cmake
+sudo apt-get install -y python-dev
 
 cd ~/.vim/bundle/YouCompleteMe/
 git submodule update --init --recursive
@@ -19,7 +19,7 @@ if [ -e ~/.vimrc ]; then
     mv ~/.vimrc ~/.vimrc.old
 fi
 
-ln -s .vimrc ~/
+ln -s ~/.vim/.vimrc ~/.vimrc
 
 cd ~/
 vim +PluginInstall +qall
