@@ -19,8 +19,11 @@ if [ -e ~/.vim ]; then
     mv ~/.vim ~/.vim.old
 fi
 
-cp .vimrc ~/
-mkdir -p ~/.vim/autoload
+mkdir -p ${HOME}/.vim/undodir
+mkdir -p ${HOME}/.vim/autoload
+
+ln -sf ${HOME}/.vim/.vimrc ${VIMRC} 
+
 cp -R ./colors ~/.vim
 
 # Install junegunn/vim-plug

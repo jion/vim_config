@@ -4,21 +4,30 @@ filetype off " required
 " Plugins (using junegunn/vim-plug)
 call plug#begin('~/.vim/bundle')
 
+
+Plug 'Valloric/YouCompleteMe'
 Plug 'airblade/vim-gitgutter'
-Plug 'wting/gitsessions.vim'
+Plug 'cakebaker/scss-syntax.vim'
+Plug 'cfsalguero/perl-go-to-def'
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'fatih/vim-go'
+Plug 'fisadev/vim-isort'
+Plug 'gmarik/Vundle.vim'
+Plug 'helino/vim-json'
+Plug 'isRuslan/vim-es6'
+Plug 'janko-m/vim-test'
+Plug 'mattn/emmet-vim'
+Plug 'pangloss/vim-javascript'
 Plug 'scrooloose/nerdtree'
-Plug 'yegappan/mru'
+Plug 'scrooloose/syntastic'
+Plug 'ternjs/tern_for_vim'
 Plug 'tpope/vim-fugitive'
 Plug 'vim-airline/vim-airline'
-Plug 'ctrlpvim/ctrlp.vim'
-Plug 'Valloric/YouCompleteMe'
-
-Plug 'fatih/vim-go'
-Plug 'cfsalguero/perl-go-to-def'
-Plug 'pangloss/vim-javascript'
-Plug 'mattn/emmet-vim'
-Plug 'ternjs/tern_for_vim'
-Plug 'helino/vim-json'
+Plug 'vim-scripts/Conque-Shell'
+Plug 'wincent/command-t'
+Plug 'wting/gitsessions.vim'
+Plug 'xolox/vim-misc'
+Plug 'yegappan/mru'
 
 call plug#end()
 """""""""""""""""""""""""""""""""""
@@ -36,11 +45,19 @@ set ttyfast
 " Must be one of: xterm, xterm2, netterm, dec, jsbterm, pterm
 "set ttymouse=xterm2
 
+set undofile " Maintain undo history between sessions
+set undodir=~/.vim/undodir
 set completeopt=longest,menuone
 set showtabline=2
 set path=.,,**
 
+" Case sentive search only if the search word has an upppercase letter
+" Both ignorecase and smartcase must be on to make this feature work
+set ignorecase
+set smartcase
+
 :let mapleader = ","
+:imap jj <Esc>
 
 let g:neomake_verbose=1
 let g:neomake_logfile='/tmp/s'
@@ -62,6 +79,18 @@ let g:syntastic_auto_loc_list = 0
 let g:syntastic_go_checkers = ['gofmt', 'go', 'golint', 'govet', 'errcheck']
 let g:syntastic_enable_perl_checker = 1
 let g:syntastic_perl_checkers = ['perl', 'podchecker']
+let g:syntastic_python_checkers = ['pyflakes']
+
+"""""""""
+set statusline+=%#warningmsg#
+set statusline+=%{SyntasticStatuslineFlag()}
+set statusline+=%*
+
+let g:syntastic_always_populate_loc_list = 1
+let g:syntastic_auto_loc_list = 1
+let g:syntastic_check_on_open = 1
+let g:syntastic_check_on_wq = 0
+"""""""
 
 let g:go_fmt_fail_silently = 1
 let g:go_fmt_autosave = 1
@@ -83,6 +112,14 @@ let g:session_autoload = 'yes'
 let g:session_autosave = 'yes'
 let g:session_default_to_last = 1
 
+" Tests
+nmap <silent> <leader>t :TestNearest<CR>
+nmap <silent> <leader>T :TestFile<CR>
+nmap <silent> <leader>a :TestSuite<CR>
+nmap <silent> <leader>l :TestLast<CR>
+nmap <silent> <leader>g :TestVisit<CR>
+
+" GO Remappings
 au FileType go nmap <Leader>s <Plug>(go-implements)
 au FileType go nmap <Leader>gd <Plug>(go-doc)
 au FileType go nmap <Leader>gv <Plug>(go-doc-vertical)
@@ -105,29 +142,29 @@ set ssop-=options    " do not store global and local values in a session
 "set ssop-=folds      " do not store folds
 
 
-set number
-set t_Co=256
-set background=dark
-set expandtab
-set tabstop=2 
-set shiftwidth=2
-set virtualedit=all                       
-set backspace=2
-set nocompatible
-set nowrap
-set cursorline
-set syntax=sh
-set showmatch
 set autoindent
+set autoindent
+set background=dark
+set backspace=2
+set cursorline
 set expandtab
-set history=150
-set formatoptions=tcql
-set nostartofline
-set laststatus=2
-set hlsearch
-set foldmethod=syntax
 set foldlevelstart=20
+set foldmethod=syntax
+set formatoptions=tcql
 set hidden
+set history=150
+set hlsearch
+set laststatus=2
+set nocompatible
+set nostartofline
+set nowrap
+set number
+set shiftwidth=4
+set showmatch
+set syntax=sh
+set t_Co=256
+set tabstop=4 
+set virtualedit=all                       
 
 colorscheme hybrid
 
@@ -157,15 +194,18 @@ hi TabLineSel term=none cterm=none ctermfg=White ctermbg=Blue
 "set <End>=[4~
 "set <Insert>=[2~
 
-map  <C-n>       :NERDTreeToggle<CR>
-map  <C-k>       <Esc>:bnext<CR>
-map  <C-j>       <Esc>:bprevious<CR>
-map  <C-x>       <Esc>:bd<CR>
-map  <C-h>       <Esc>:noh<Up>
-map  <C-Right>   <Esc><C-w><Right><CR>
-map  <C-Left>    <Esc><C-w><Left><CR>
 map  <C-Down>    <Esc><C-w><Down>
+map  <C-Left>    <Esc><C-w><Left><CR>
+map  <C-Right>   <Esc><C-w><Right><CR>
+map  <C-S-Down>  :lnext<CR>
+map  <C-S-Up>    :lprevious<CR>
 map  <C-Up>      <Esc><C-w><Up>
+map  <C-h>       <Esc>:noh<Up><CR>
+map  <C-j>       <Esc>:bprevious<CR>
+map  <C-k>       <Esc>:bnext<CR>
+map  <C-n>       :NERDTreeToggle<CR>
+map  <C-x>       <Esc>:bd<CR>
+map  <Leader>n       :NERDTreeToggle<CR>
 
 " :w!! will write read only files not opened with sudo
 cmap w!! w !sudo tee % >/dev/null
