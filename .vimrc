@@ -5,22 +5,26 @@ filetype off " required
 call plug#begin('~/.vim/bundle')
 
 
+" Plug 'python-mode/python-mode'
 Plug 'Valloric/YouCompleteMe'
 Plug 'airblade/vim-gitgutter'
 Plug 'cakebaker/scss-syntax.vim'
 Plug 'cfsalguero/perl-go-to-def'
 Plug 'ctrlpvim/ctrlp.vim'
+Plug 'elzr/vim-json'
 Plug 'fatih/vim-go'
 Plug 'fisadev/vim-isort'
+Plug 'flazz/vim-colorschemes'
 Plug 'gmarik/Vundle.vim'
-Plug 'helino/vim-json'
 Plug 'isRuslan/vim-es6'
 Plug 'janko-m/vim-test'
+Plug 'junegunn/goyo.vim'
 Plug 'mattn/emmet-vim'
 Plug 'pangloss/vim-javascript'
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/syntastic'
 Plug 'ternjs/tern_for_vim'
+Plug 'tpope/tpope-vim-abolish'
 Plug 'tpope/vim-fugitive'
 Plug 'vim-airline/vim-airline'
 Plug 'vim-scripts/Conque-Shell'
@@ -62,15 +66,16 @@ set smartcase
 let g:neomake_verbose=1
 let g:neomake_logfile='/tmp/s'
 
-let g:ycm_auto_trigger=1
-let g:ycm_key_invoke_completion = '<C-Space>'
-let g:ycm_complete_in_strings = 1 "default 1
-let g:ycm_min_num_of_chars_for_completion=3
-let g:ycm_register_as_syntastic_checker = 1 "default 1
-let g:ycm_enable_diagnostic_signs = 1
-let g:ycm_enable_diagnostic_highlighting = 1
 let g:ycm_always_populate_location_list = 0 "default 0
+let g:ycm_auto_trigger=1
+let g:ycm_complete_in_strings = 1 "default 1
+let g:ycm_enable_diagnostic_highlighting = 1
+let g:ycm_enable_diagnostic_signs = 1
+let g:ycm_key_invoke_completion = '<C-Space>'
+let g:ycm_min_num_of_chars_for_completion=3
 let g:ycm_open_loclist_on_ycm_diags = 1 "default 1
+let g:ycm_python_binary_path = 'python'
+let g:ycm_register_as_syntastic_checker = 1 "default 1
 
 let g:Show_diagnostics_ui = 1 "default 1
 
@@ -107,6 +112,8 @@ let g:airline#extensions#tabline#enabled = 1
 "let g:airline#extensions#tabline#show_buffers = 0
 
 let NERDTreeQuitOnOpen = 1
+let NERDTreeIgnore = ['\.pyc$']
+
 "
 let g:session_autoload = 'yes'
 let g:session_autosave = 'yes'
@@ -120,16 +127,16 @@ nmap <silent> <leader>l :TestLast<CR>
 nmap <silent> <leader>g :TestVisit<CR>
 
 " GO Remappings
-au FileType go nmap <Leader>s <Plug>(go-implements)
-au FileType go nmap <Leader>gd <Plug>(go-doc)
-au FileType go nmap <Leader>gv <Plug>(go-doc-vertical)
-au FileType go nmap <leader>r <Plug>(go-run)
-au FileType go nmap <leader>b <Plug>(go-build)
-au FileType go nmap <leader>t <Plug>(go-test)
-au FileType go nmap <leader>c <Plug>(go-coverage)
-au FileType go nmap <Leader>dt <Plug>(go-def-tab)
-au FileType go nmap <Leader>e <Plug>(go-rename)
-au FileType go nmap <Leader>i <Plug>(go-info)
+" au FileType go nmap <Leader>s <Plug>(go-implements)
+" au FileType go nmap <Leader>gd <Plug>(go-doc)
+" au FileType go nmap <Leader>gv <Plug>(go-doc-vertical)
+" au FileType go nmap <leader>r <Plug>(go-run)
+" au FileType go nmap <leader>b <Plug>(go-build)
+" au FileType go nmap <leader>t <Plug>(go-test)
+" au FileType go nmap <leader>c <Plug>(go-coverage)
+" au FileType go nmap <Leader>dt <Plug>(go-def-tab)
+" au FileType go nmap <Leader>e <Plug>(go-rename)
+" au FileType go nmap <Leader>i <Plug>(go-info)
 
 au BufRead,BufNewFile *.md set filetype=markdown
 au BufRead,BufNewFile *.go set filetype=go
@@ -163,10 +170,17 @@ set shiftwidth=4
 set showmatch
 set syntax=sh
 set t_Co=256
+set tags=.tags
 set tabstop=4 
 set virtualedit=all                       
 
-colorscheme hybrid
+syntax enable
+if has('gui_running')
+    set background=light
+else
+    set background=dark
+endif
+colorscheme solarized
 
 hi CursorLine term=none cterm=none ctermbg=Black
 hi TabLineFill ctermfg=White ctermbg=DarkGrey
@@ -206,6 +220,7 @@ map  <C-k>       <Esc>:bnext<CR>
 map  <C-n>       :NERDTreeToggle<CR>
 map  <C-x>       <Esc>:bd<CR>
 map  <Leader>n       :NERDTreeToggle<CR>
+nnoremap <leader>. :CtrlPTag<cr>
 
 " :w!! will write read only files not opened with sudo
 cmap w!! w !sudo tee % >/dev/null
@@ -214,3 +229,36 @@ if has("autocmd")
   au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
 endif
 
+if exists('+colorcolumn')
+  set colorcolumn=80
+else
+  au BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
+endif
+
+""""""""""""""""""""""""""
+"" CtrlP configuration  ""
+""""""""""""""""""""""""""
+" Lets improve ctrlp performance
+let g:ctrlp_cache_dir = $HOME . '/.cache/ctrlp'
+if executable('ag')
+  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
+endif
+
+" Setup some default ignores
+let g:ctrlp_custom_ignore = {
+  \ 'dir':  '\v[\/](\.(git|hg|svn)|\_site)$',
+  \ 'file': '\v\.(exe|so|dll|class|png|jpg|jpeg)$',
+\}
+
+" Use the nearest .git directory as the cwd
+" This makes a lot of sense if you are working on a project that is in version
+" control. It also supports works with .svn, .hg, .bzr.
+let g:ctrlp_working_path_mode = 'r'
+
+" Use a leader instead of the actual named binding
+nmap <leader>p :CtrlP<cr>
+
+" Easy bindings for its various modes
+nmap <leader>bb :CtrlPBuffer<cr>
+nmap <leader>bm :CtrlPMixed<cr>
+nmap <leader>bs :CtrlPMRU<cr>

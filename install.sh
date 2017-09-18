@@ -4,20 +4,22 @@ DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" > /dev/null && pwd )"
 
 pushd $DIR
 
-# Backup existing configuration
-if [ -e ~/.vimrc ]; then
-    if [ -e ~/.vimrc.old ]; then
-        rm ~/.vimrc.old
+DATE=$(date +%FT%T%z)
+VIMRC="${HOME}/.vimrc"
+
+if [ -a ${HOME}/.vimrc ];
+then
+    echo "Found ${VIMRC}"
+    if [ -L ${VIMRC} ];
+    then
+	echo "Deleting .vimrc link ${VIMRC}"
+        rm $VIMRC
+    else
+	echo "Renaming ${VIMRC} to ${VIMRC}_${DATE}"
+        mv ${VIMRC} ${VIMRC}_${DATE}
     fi
-    mv ~/.vimrc ~/.vimrc.old
 fi
 
-if [ -e ~/.vim ]; then
-    if [ -e ~/.vim.old ]; then
-        rm -Rf ~/.vim.old
-    fi
-    mv ~/.vim ~/.vim.old
-fi
 
 mkdir -p ${HOME}/.vim/undodir
 mkdir -p ${HOME}/.vim/autoload
