@@ -21,6 +21,7 @@ Plug 'janko-m/vim-test'
 Plug 'junegunn/goyo.vim'
 Plug 'mattn/emmet-vim'
 Plug 'pangloss/vim-javascript'
+"Plug 'python-mode/python-mode'
 Plug 'scrooloose/nerdtree'
 Plug 'scrooloose/syntastic'
 Plug 'ternjs/tern_for_vim'
@@ -221,6 +222,7 @@ map  <C-n>       :NERDTreeToggle<CR>
 map  <C-x>       <Esc>:bd<CR>
 map  <Leader>n       :NERDTreeToggle<CR>
 nnoremap <leader>. :CtrlPTag<cr>
+nmap ,d :b#<bar>bd#<CR>
 
 " :w!! will write read only files not opened with sudo
 cmap w!! w !sudo tee % >/dev/null
@@ -256,7 +258,7 @@ let g:ctrlp_custom_ignore = {
 let g:ctrlp_working_path_mode = 'r'
 
 " Use a leader instead of the actual named binding
-nmap <leader>p :CtrlP<cr>
+nmap <leader><leader> :CtrlP<cr>
 
 " Easy bindings for its various modes
 nmap <leader>bb :CtrlPBuffer<cr>
